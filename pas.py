@@ -50,7 +50,7 @@ def simular_PAS(p, n, reps):
     raise ValueError("Debe haber al menos una simulación.")
 
   #Este proceso genera el PAS. Primero, genera números aleatorios uniformemente en (0, 1).
-  pas = np.random.rand(reps,n+1)
+  pas = np.random.rand(reps,n+1) #(reps, n+1)
    #Considero un paso hacia arriba si el número aleatorio es menor que p, con probablidad p.
   pas = 2*(pas < p) -1
   # Para general el PAS, el paso 0 es siempre 0, y los demás se obtienen sumando por filas, acumuladamente, los pasos.
@@ -111,7 +111,7 @@ media = (2*p-1)*x
 sdev = (4*x*p*(1-p))**0.5
 #Con Líneas discontinuas marca la media, en color negro.
 plt.figure()
-for i in range(Reps):
+for i in range(reps):
   plt.plot(x, pas[i,], '-')
 #El IfMedia indica si quieres que aparezca la media marcada.
 if IfMedia:
@@ -156,19 +156,19 @@ def simular_PAS_Grafica (Nombre, p, n, reps, IfMedia=False, IfVarianza=False, Se
 
 
   #Este proceso genera el PAS. Primero, genera números aleatorios uniformemente en (0, 1).
-  pas = np.random.rand(reps,n+1)
+  pas = np.random.rand(reps,n+1) #(reps,n+1)
    #Considero un paso hacia arriba si el número aleatorio es menor que p, con probablidad p.
   pas = 2*(pas < p) -1
   # Para general el PAS, el paso 0 es siempre 0, y los demás se obtienen sumando por filas, acumuladamente, los pasos.
   pas[:,0] = 0
   pas = np.cumsum(pas,axis=1)
 
-  #Si quieres mostrar el PAS, se activa un print. Puede ser útil para comprobar.
+  #Si quieres mostrar el PAS, se activa un print. Puede ser útil para comprobar. Default: False.
   if Lista:
     print(pas)
   #Ahora voy a imprimir la gráfica.
 
-  x = np.linspace(0, n, n+1)
+  x = np.linspace(0, n, n+1) #(n+1)
   #Calculo la media y la desviación típica.
   media = (2*p-1)*x
   sdev = (4*x*p*(1-p))**0.5
@@ -176,12 +176,12 @@ def simular_PAS_Grafica (Nombre, p, n, reps, IfMedia=False, IfVarianza=False, Se
   plt.figure()
   for i in range(reps):
     plt.plot(x, pas[i,], '-')
-  #El IfMedia indica si quieres que aparezca la media marcada.
+  #El IfMedia indica si quieres que aparezca la media marcada. Default: False.
    #Con Líneas discontinuas marca la media, en color negro.
   if IfMedia:
     plt.plot(x, media, 'k--', label = "Media")
   if IfVarianza:
-  #El IfVarianza indica si quieres que aparezca los rangos de desviación típica marcada.
+  #El IfVarianza indica si quieres que aparezca los rangos de desviación típica marcada. Default: False.
     plt.fill_between(x, media - sdev, media + sdev, alpha=0.35, label="±1σ")
     plt.fill_between(x, media - 2*sdev, media + 2*sdev, alpha=0.15, label = "±2σ")
   plt.savefig(str(Nombre) +'.pdf')
@@ -192,7 +192,10 @@ def simular_PAS_Grafica (Nombre, p, n, reps, IfMedia=False, IfVarianza=False, Se
 #Devuelvo el PAS.
   return pas
 
-"""Podemos empezar a hacer las figuras pedidas. La última requiere un tratamiento especial y se explica en el código."""
+"""Podemos empezar a hacer las figuras pedidas. La última requiere un tratamiento especial y se explica en el código.
+
+### Visualización 1
+"""
 
 #La primera gráfica, aparece en la diapositiva 16 del Tema 1. (reps = 5, n = 500, p = 0.5)
 simular_PAS_Grafica('Graf1', 0.5, 500, 5)
@@ -201,13 +204,25 @@ simular_PAS_Grafica('Graf2', 0.6, 500, 5)
 #La tercera gráfica, aparece en la diapositiva 18 del tema 1. (reps = 5, n = 500, p = 0.4)
 simular_PAS_Grafica('Graf3', 0.4, 500, 5)
 
+print("Primeras gráficas completadas.")
+
+"""### Visualización 2
+
+En estas mostramos la media teórica y los intervalos dados por la desviación típica, $\sigma$ y $2\sigma$.
+"""
+
 #La cuarta gráfica, aparece en la diapositiva 30 del Tema 1. (reps = 20, n = 500, p = 0.5)
 simular_PAS_Grafica('Graf4', 0.5, 500, 20, True, True)
 #La quinta gráfica, aparece en la diapositiva 31 del Tema 1. (reps = 20, n = 500, p = 0.75)
 simular_PAS_Grafica('Graf5', 0.75, 500, 20, True, True)
 #La sexta gráfica, aparece en la diapositiva 32 del tema 1. (reps = 20, n = 500, p = 0.95)
 simular_PAS_Grafica('Graf6', 0.95, 500, 20, True, True)
+print("Segundas gráficas completadas.")
 
+"""### Visualización 3
+
+Comparación de la media empírica y teórica.
+"""
 
 #La última gráfica, aparece en la diapositiva 35 del Tema 1. Utiliza medias, así que la haremos por separado.
 #Calculo con la función simular_PAS (sin gráfica) las trayectorias a promediar.
@@ -235,4 +250,3 @@ plt.plot(x, pas1000, label = "1000")
 plt.legend(loc="lower left")
 plt.savefig('Graf7.png')
 plt.show()
-
